@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -7,19 +7,6 @@ import { translations } from '../translations';
 const ContactForm = () => {
   const { language } = useLanguage();
   const t = translations[language].contactPage;
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    service: '',
-    subject: '',
-    message: '',
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log(formData);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-32 px-6">
@@ -35,40 +22,53 @@ const ContactForm = () => {
 
         <div className="grid md:grid-cols-2 gap-12">
           <motion.form
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            name="contact" // Nombre del formulario para Netlify
+            method="POST"
+            data-netlify="true" // Activación de Netlify Forms
+            data-netlify-honeypot="bot-field" // Campo anti-bot
             className="space-y-6"
-            onSubmit={handleSubmit}
           >
+            {/* Campo oculto para Netlify */}
+            <input type="hidden" name="form-name" value="contact" />
+            <input type="hidden" name="bot-field" />
+
+            {/* Campos del formulario */}
             <div className="grid grid-cols-2 gap-6">
               <input
                 type="text"
+                name="name"
                 placeholder={t.form.name}
                 className="col-span-2 md:col-span-1 p-3 rounded-lg border focus:ring-2 focus:ring-blue-600"
                 required
               />
               <input
                 type="email"
+                name="email"
                 placeholder={t.form.email}
                 className="col-span-2 md:col-span-1 p-3 rounded-lg border focus:ring-2 focus:ring-blue-600"
                 required
               />
             </div>
-            <select className="w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-600">
+            <select
+              name="service"
+              className="w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-600"
+              required
+            >
               <option value="">{t.form.service}</option>
-              <option value="vulnerability">
-                {t.form.services.vulnerability}
-              </option>
+              <option value="vulnerability">{t.form.services.vulnerability}</option>
               <option value="penetration">{t.form.services.penetration}</option>
               <option value="compliance">{t.form.services.compliance}</option>
               <option value="training">{t.form.services.training}</option>
             </select>
             <input
               type="text"
+              name="subject"
               placeholder={t.form.subject}
               className="w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-600"
+              required
             />
             <textarea
+              name="message"
               placeholder={t.form.message}
               rows={6}
               className="w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-600"
@@ -87,6 +87,7 @@ const ContactForm = () => {
             animate={{ opacity: 1, x: 0 }}
             className="space-y-8"
           >
+            {/* Información adicional */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <MapPin className="w-6 h-6 text-blue-600 mb-2" />
               <h3 className="text-lg font-semibold mb-2">
@@ -109,7 +110,7 @@ const ContactForm = () => {
               <p className="text-gray-600">
                 {t.info.contact.phone}
                 <br />
-                Email: asphar.info@gmail.com
+                Email: <a href="mailto:asphar.info@gmail.com">asphar.info@gmail.com</a>
               </p>
             </div>
 
